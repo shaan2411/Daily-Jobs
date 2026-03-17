@@ -44,13 +44,22 @@ app.get('/post-job', (req, res) => res.sendFile(path.join(__dirname, 'public', '
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 // Database connection
-mongoose.connect(MONGODB_URI)
-    .then(() => {
+const connectDB = async () => {
+    try {
+        await mongoose.connect(MONGODB_URI);
         console.log('Connected to MongoDB');
-        app.listen(PORT, () => {
-            console.log(`Server running on http://localhost:${PORT}`);
-        });
-    })
-    .catch((err) => {
+    } catch (err) {
         console.error('MongoDB connection error:', err);
+    }
+};
+
+connectDB();
+
+// Handle local development
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
     });
+}
+
+module.exports = app;
