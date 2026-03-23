@@ -259,23 +259,6 @@ textarea.form-control { resize:vertical; min-height:100px; }
   gap:1rem; flex-wrap:wrap; margin-bottom:4rem;
 }
 
-/* ---- Stats Strip ---- */
-.stats-strip {
-  display:flex; justify-content:center; gap:3rem; flex-wrap:wrap;
-  padding:2rem; background:#fff;
-  border:1px solid var(--border); border-radius:var(--radius-lg);
-  max-width:750px; margin:0 auto;
-  box-shadow:var(--shadow-sm);
-}
-.stat-item { text-align:center; }
-.stat-item .number {
-  display:block; font-size:1.75rem; font-weight:800;
-  color:var(--primary); letter-spacing:-0.02em;
-}
-.stat-item .label {
-  font-size:0.82rem; color:var(--text-muted);
-  font-weight:500; margin-top:0.15rem;
-}
 
 /* ---- Feature Grid ---- */
 .features-section { padding:5rem 0; }
@@ -340,6 +323,7 @@ textarea.form-control { resize:vertical; min-height:100px; }
   font-size:0.875rem; color:var(--text-muted); line-height:1.6;
   margin-bottom:1rem; flex:1;
   display:-webkit-box; -webkit-line-clamp:3;
+  line-clamp: 3;
   -webkit-box-orient:vertical; overflow:hidden;
 }
 .job-meta { display:flex; flex-wrap:wrap; gap:0.6rem; margin-bottom:1rem; }
@@ -420,7 +404,75 @@ textarea.form-control { resize:vertical; min-height:100px; }
   display:flex; align-items:center; justify-content:space-between;
   margin-bottom:1.5rem; gap:1rem;
 }
-.content-header h2 { margin:0; }
+.content-header h2 { margin:0; }/* ---- Notifications ---- */
+.nav-notif-wrapper { position: relative; display: flex; align-items: center; }
+.notif-btn {
+  background: none; border: none; color: var(--text-sub);
+  cursor: pointer; padding: 0.5rem; border-radius: 50%;
+  transition: all 0.2s; position: relative;
+}
+.notif-btn:hover { background: var(--bg); color: var(--primary); }
+.notif-badge {
+  position: absolute; top: 0; right: 0;
+  background: var(--danger); color: white;
+  font-size: 0.65rem; font-weight: 700;
+  min-width: 16px; height: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+}
+
+.notif-dropdown {
+  position: absolute; top: 100%; right: 0;
+  width: 320px; background: white; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg); border: 1px solid var(--card-border);
+  margin-top: 0.75rem; z-index: 1000;
+  display: none; flex-direction: column; overflow: hidden;
+  animation: fadeIn 0.2s ease-out;
+}
+.notif-dropdown.active { display: flex; }
+.notif-header {
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--bg);
+  font-weight: 600; display: flex; justify-content: space-between; align-items: center;
+}
+.notif-list { max-height: 400px; overflow-y: auto; }
+.notif-item {
+  padding: 1rem 1.25rem; border-bottom: 1px solid var(--bg);
+  cursor: pointer; transition: background 0.2s;
+  display: flex; flex-direction: column; gap: 0.25rem;
+}
+.notif-item:hover { background: var(--bg); }
+.notif-item.unread { background: rgba(99, 102, 241, 0.03); }
+.notif-item.unread::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--primary);
+}
+.notif-msg { font-size: 0.9rem; line-height: 1.4; color: var(--text); }
+.notif-time { font-size: 0.75rem; color: var(--text-muted); }
+.notif-empty { padding: 3rem 1rem; text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Dashboard Fixes */
+.dashboard-metrics {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.metric-card {
+  background: white; border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg); padding: 1.5rem;
+  display: flex; align-items: center; gap: 1.25rem;
+}
+.metric-card .icon-box { font-size: 1.5rem; }
+.metric-info h4 { font-size: 0.85rem; color: var(--text-muted); margin: 0; font-weight: 500; }
+.metric-info .value { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+
+.content-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 2rem;
+}
 
 .stat-cards {
   display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));

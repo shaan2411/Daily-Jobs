@@ -15,9 +15,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+const { verifyToken } = require('../middleware/authMiddleware');
+
 router.post('/register', upload.single('addressProof'), authController.register);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
+
+router.use(verifyToken);
 router.get('/profile', authController.getProfile);
+router.put('/profile', authController.updateProfile);
 
 module.exports = router;

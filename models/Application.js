@@ -1,10 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const applicationSchema = new mongoose.Schema({
-    jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
-    seekerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    status: { type: String, enum: ['pending', 'accepted', 'rejected'], default: 'pending' },
-    appliedAt: { type: Date, default: Date.now }
+  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
+  seekerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  userId: { type: String, required: true }, // Added for user compatibility
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending' },
+  appliedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Application', applicationSchema);
+module.exports = mongoose.model("Application", applicationSchema);

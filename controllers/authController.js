@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
     try {
@@ -41,28 +42,69 @@ exports.login = async (req, res) => {
             return res.status(401).json({ error: 'Invalid email, password, or role' });
         }
 
-        // Set a session or simple cookie for authentication
-        req.session.userId = user._id;
-        req.session.role = user.role;
+        const token = jwt.sign(
+            { userId: user._id, role: user.role },
+            process.env.JWT_SECRET || 'dailyjobs-jwt-secret',
+            { expiresIn: '1d' }
+        );
 
-        res.json({ message: 'Login successful', role: user.role, userId: user._id });
+        // Set JWT as cookie for server route protection
+        res.cookie('token', token, { httpOnly: true, maxAge: 86400000 });
+
+        const redirectUrl = user.role === 'seeker' ? '/jobs' : '/dashboard';
+
+        res.json({ 
+            message: 'Login successful', 
+            token,
+            user: { 
+                _id: user._id.toString(),
+                name: user.name,
+                email: user.email
+            },
+            role: user.role,
+            redirect: redirectUrl 
+        });
     } catch (error) {
         res.status(500).json({ error: 'Server error during login' });
     }
 };
 
 exports.logout = (req, res) => {
-    req.session.destroy(err => {
-        if (err) return res.status(500).json({ error: 'Could not log out' });
-        res.clearCookie('connect.sid');
-        res.json({ message: 'Logged out successfully' });
-    });
+    res.clearCookie('token');
+    res.json({ message: 'Logged out successfully' });
 };
 
 exports.getProfile = async (req, res) => {
     try {
-        if (!req.session.userId) return res.status(401).json({ error: 'Not authenticated' });
-        const user = await User.findById(req.session.userId).select('-password');
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Not authenticated' });
+        const user = await User.findById(userId).select('-password');
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+exports.getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({ error: 'Server error' });
+    }
+};
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Not authenticated' });
+        const { name, phone, address } = req.body;
+        const user = await User.findByIdAndUpdate(
+            userId, 
+            { name, phone, address }, 
+            { new: true }
+        ).select('-password');
         res.json(user);
     } catch (error) {
         res.status(500).json({ error: 'Server error' });

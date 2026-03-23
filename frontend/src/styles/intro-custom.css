@@ -1,0 +1,95 @@
+/* Intro.js Custom Styling - Anti-Gravity Theme */
+
+/* Floating animation for highlighted elements */
+@keyframes levitate {
+  0% { transform: translateY(0); filter: drop-shadow(0 0 0 rgba(110, 107, 224, 0)); }
+  50% { transform: translateY(-8px); filter: drop-shadow(0 15px 15px rgba(110, 107, 224, 0.2)); }
+  100% { transform: translateY(0); filter: drop-shadow(0 0 0 rgba(110, 107, 224, 0)); }
+}
+
+.introjs-helperLayer {
+  border-radius: 1rem !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(4px) !important;
+  border: 2px solid rgba(110, 107, 224, 0.5) !important;
+  animation: levitate 3s ease-in-out infinite !important;
+  box-shadow: 0 0 30px rgba(110, 107, 224, 0.2) !important;
+}
+
+/* Tooltip Styling */
+.introjs-tooltip {
+  border-radius: 1.25rem !important;
+  padding: 1.5rem !important;
+  background: #ffffff !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid #f1f5f9 !important;
+  font-family: 'Inter', sans-serif !important;
+  max-width: 320px !important;
+}
+
+.introjs-tooltiptitle {
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+  color: #1e293b !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.introjs-tooltiptext {
+  font-size: 0.9rem !important;
+  color: #64748b !important;
+  line-height: 1.6 !important;
+}
+
+/* Custom Buttons */
+.introjs-button {
+  border-radius: 0.75rem !important;
+  padding: 0.5rem 1rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  transition: all 0.3s !important;
+}
+
+.introjs-nextbutton {
+  background: #6e6be0 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.introjs-prevbutton {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  border: none !important;
+}
+
+.introjs-skipbutton {
+  color: #94a3b8 !important;
+  font-weight: 500 !important;
+}
+
+.introjs-disabled {
+  opacity: 0.5 !important;
+  cursor: not-allowed !important;
+}
+
+/* Progress Bullet */
+.introjs-bullets ul li a.active {
+  background: #6e6be0 !important;
+}
+
+/* Overlay focus */
+.introjs-overlay {
+  background: rgba(15, 23, 42, 0.85) !important;
+  backdrop-filter: blur(2px) !important;
+}
+
+/* Floating Dots Background (Optional Effect during tour) */
+.tour-active-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999998;
+  background-image: radial-gradient(#6e6be0 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.05;
+}

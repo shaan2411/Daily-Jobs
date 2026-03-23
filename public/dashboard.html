@@ -5,270 +5,441 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard — Daily Jobs</title>
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Dashboard specific refinements */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    .main-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+    .top-bar {
+      height: 70px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .top-bar-search {
+      flex: 1;
+      max-width: 400px;
+      position: relative;
+    }
+    .top-bar-search input {
+      padding-left: 2.5rem;
+    }
+    .top-bar-search svg {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .top-bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    .user-profile-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+    .user-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--primary-dim);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+    .stat-card-new {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: transform var(--transition);
+    }
+    .stat-card-new:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+    .stat-card-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .stat-card-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .activity-section {
+      padding: 0 2rem 2rem;
+    }
+    .activity-card {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+    .activity-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .activity-item {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background 0.2s;
+    }
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    .activity-item:hover {
+      background: #f8fafc;
+    }
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .activity-info {
+      flex: 1;
+    }
+    .activity-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+    .activity-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .sidebar-new {
+      width: 260px;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-logo {
+      margin-bottom: 2.5rem;
+      padding-left: 0.5rem;
+    }
+  </style>
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="container navbar-inner">
-      <a href="/" class="brand">
-        <span class="brand-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-        </span>
-        Daily<span class="brand-dot">Jobs</span>
-      </a>
-      <div class="nav-links" id="nav-links">
-        <!-- Injected via JS -->
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar-new">
+      <div class="sidebar-logo">
+        <a href="index.html" class="brand">
+          <span class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          </span>
+          Daily<span class="brand-dot">Jobs</span>
+        </a>
       </div>
-    </div>
-  </nav>
 
-  <main class="container">
-    <div class="dashboard-layout">
+      <nav class="sidebar-nav">
+        <a href="index.html" class="sidebar-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Home
+        </a>
+        <a href="jobs.html" class="sidebar-link" id="side-find-jobs">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Find Jobs
+        </a>
+        <a href="dashboard.html" class="sidebar-link active">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="profile.html" class="sidebar-link">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profile
+        </a>
+        <a href="#" class="sidebar-link" id="nav-notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifications
+        </a>
+        <div class="sidebar-divider"></div>
+        <a href="#" class="sidebar-link" id="logout-btn-dash" style="color:var(--danger);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </a>
+      </nav>
+    </aside>
 
-      <!-- Sidebar -->
-      <aside class="sidebar">
-        <div class="sidebar-user">
-          <div class="sidebar-avatar" id="sidebar-avatar">?</div>
-          <div class="sidebar-username" id="sidebar-name">Loading...</div>
-          <div class="sidebar-role" id="sidebar-role"></div>
+    <main class="main-wrapper">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <div class="top-bar-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="form-control" placeholder="Search for jobs, applications...">
         </div>
-        <nav class="sidebar-nav">
-          <a href="/dashboard" class="sidebar-link active">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            Overview
-          </a>
-          <a href="/profile" class="sidebar-link">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            My Profile
-          </a>
-          <div class="sidebar-divider"></div>
-          <!-- Employer links -->
-          <div id="employer-links" class="hidden">
-            <a href="/post-job" class="sidebar-link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Post a Job
-            </a>
-            <a href="#" class="sidebar-link" onclick="loadEmployerJobs(); return false;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
-              My Posted Jobs
-            </a>
+        <div class="top-bar-actions">
+          <div class="nav-notif-wrapper">
+            <button class="notif-btn" id="notif-toggle">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span class="notif-badge hidden" id="global-notif-badge">0</span>
+            </button>
           </div>
-          <!-- Seeker links -->
-          <div id="seeker-links" class="hidden">
-            <a href="/jobs" class="sidebar-link">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              Browse Jobs
-            </a>
-            <a href="#" class="sidebar-link" onclick="loadSeekerApplications(); return false;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              My Applications
-            </a>
+          <div class="user-profile-toggle" onclick="window.location.href='profile.html'">
+            <div class="user-name" id="userName">User</div>
+            <div class="user-avatar" id="userAvatar">U</div>
           </div>
-        </nav>
-      </aside>
-
-      <!-- Main Content -->
-      <section class="content-area">
-        <div id="alert-box" class="alert hidden"></div>
-
-        <div class="content-header">
-          <h2 id="section-title">Overview</h2>
-          <div id="header-action"></div>
         </div>
+      </header>
 
-        <div id="dashboard-content">
-          <p class="loading-text">Loading activity...</p>
+      <!-- Stats Cards -->
+      <section class="stats-container">
+        <div class="stat-card-new">
+          <span class="stat-card-label">Total Jobs Applied</span>
+          <div class="stat-card-value" id="appliedCount">0</div>
+        </div>
+        <div class="stat-card-new">
+          <span class="stat-card-label">Available Jobs</span>
+          <div class="stat-card-value" id="jobCount">0</div>
+        </div>
+        <div class="stat-card-new">
+          <span class="stat-card-label">Notifications</span>
+          <div class="stat-card-value" id="notifyCount">0</div>
         </div>
       </section>
-    </div>
-  </main>
+
+      <!-- Recent Activity -->
+      <section class="activity-section">
+        <div class="activity-card">
+          <div class="activity-header">
+            <h3>Recent Activity</h3>
+            <a href="#" class="btn btn-ghost btn-sm" id="view-all-activity">View All</a>
+          </div>
+          <div class="activity-list" id="activity-list">
+             <!-- Activity items injected here -->
+             <p class="loading-text">Loading activity items...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="alert-box" class="alert hidden"></div>
 
   <script src="/js/main.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const role = localStorage.getItem('role');
-      if (!role) { window.location.href = '/login'; return; }
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem('userId');
 
-      // Load user info for sidebar
-      try {
-        const r = await fetch('/api/auth/profile');
-        if (r.ok) {
-          const u = await r.json();
-          document.getElementById('sidebar-avatar').textContent = u.name.charAt(0).toUpperCase();
-          document.getElementById('sidebar-name').textContent   = u.name;
-          document.getElementById('sidebar-role').textContent   = role === 'employer' ? 'Employer' : 'Job Seeker';
-        }
-      } catch(_) {}
+      if (!token || !userId) {
+         window.location.href = "login.html";
+         return;
+      }
 
+      // Role-based UI adjustments
+      const role = localStorage.getItem("role");
       if (role === 'employer') {
-        document.getElementById('employer-links').classList.remove('hidden');
-        loadEmployerJobs();
-      } else {
-        document.getElementById('seeker-links').classList.remove('hidden');
-        loadSeekerApplications();
+          const findJobsLink = document.getElementById('side-find-jobs');
+          if (findJobsLink) findJobsLink.style.display = 'none';
+
+          // Change stats labels for employer
+          const statsLabels = document.querySelectorAll('.stat-card-label');
+          statsLabels.forEach(label => {
+              if (label.innerText === 'Total Jobs Applied') {
+                  label.innerText = 'Total Jobs Posted';
+              }
+          });
       }
+
+      // Load Profile Data
+      try {
+        const user = await fetchAPI('/user/' + userId);
+        if (user) {
+          document.getElementById('userName').innerText = user.name;
+          document.getElementById('userAvatar').innerText = user.name.charAt(0).toUpperCase();
+        }
+      } catch (err) {
+        console.error('Failed to load user', err);
+      }
+
+      // Load Dashboard Stats
+      try {
+        const data = await fetchAPI('/dashboard/' + userId);
+        document.getElementById('appliedCount').innerText = data.applied;
+        document.getElementById('jobCount').innerText = data.jobs;
+        document.getElementById('notifyCount').innerText = data.notifications;
+        
+        const badge = document.getElementById('global-notif-badge');
+        if (data.notifications > 0) {
+          badge.innerText = data.notifications;
+          badge.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard stats', err);
+      }
+
+      // Load Recent Activity (Role-based)
+      try {
+        const endpoint = (role === 'employer') ? '/jobs/applications/employer' : ('/applications/' + userId);
+        const apps = await fetchAPI(endpoint);
+        const activityList = document.getElementById('activity-list');
+        const activityHeaderTitle = document.getElementById('activity-header-title');
+        
+        if (role === 'employer' && activityHeaderTitle) {
+            activityHeaderTitle.innerText = 'Recent Applicants';
+        }
+
+        activityList.innerHTML = '';
+
+        if (!apps || apps.length === 0) {
+          activityList.innerHTML = '<p class="loading-text">No recent activity found.</p>';
+        } else {
+          // Show last 5
+          const recent = apps.sort((a,b) => new Date(b.appliedAt) - new Date(a.appliedAt)).slice(0, 5);
+          activityList.innerHTML = recent.map(app => {
+            const date = new Date(app.appliedAt).toLocaleDateString();
+            const jobTitle = app.jobId ? app.jobId.title : 'Deleted Job';
+            const statusColor = app.status === 'approved' ? 'var(--success)' : (app.status === 'rejected' ? 'var(--danger)' : 'var(--primary)');
+            
+            if (role === 'employer' && app.seekerId) {
+                // Employer View: Show seeker details and Accept button
+                return `
+                  <div class="activity-item">
+                    <div class="activity-icon" style="background: var(--success-dim); color: var(--success);">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="activity-info">
+                      <div class="activity-title"><strong>${app.seekerId.name}</strong> applied for <strong>${jobTitle}</strong></div>
+                      <div class="activity-time">${app.seekerId.phone} &bull; ${app.seekerId.email} &bull; ${date}</div>
+                      <div style="margin-top:0.5rem">
+                         ${app.status === 'pending' ? 
+                           `<button onclick="acceptApplication('${app._id}')" class="btn btn-primary btn-sm">Accept Applicant</button>` :
+                           `<span style="color:${statusColor}; font-weight:600;">Status: ${app.status.toUpperCase()}</span>`
+                         }
+                      </div>
+                    </div>
+                  </div>
+                `;
+            } else {
+                // Seeker View: Show application status
+                const isApproved = app.status === 'approved';
+                const employer = (app.jobId && app.jobId.employerId) ? app.jobId.employerId : null;
+                
+                return `
+                  <div class="activity-item">
+                    <div class="activity-icon" style="background: var(--primary-dim); color: var(--primary);">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect x="2" y="7" width="20" height="14" rx="2"/></svg>
+                    </div>
+                    <div class="activity-info">
+                      <div class="activity-title">Applied for <strong>${jobTitle}</strong></div>
+                      <div class="activity-time">${date} &bull; Status: <span style="color:${statusColor}; font-weight:600;">${app.status.toUpperCase()}</span></div>
+                      ${isApproved && employer ? `
+                        <div style="margin-top:0.8rem; padding:0.6rem; background:rgba(16, 185, 129, 0.1); border-radius:6px; border:1px solid rgba(16, 185, 129, 0.2);">
+                           <div style="font-weight:600; font-size:0.8rem; color:var(--success); margin-bottom:0.2rem;">ACCEPTED! CONTACT EMPLOYER:</div>
+                           <div style="font-size:0.9rem;"><strong>${employer.name}</strong></div>
+                           <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.5rem;">${employer.phone} &bull; ${employer.email}</div>
+                           <div>
+                              <a href="tel:${employer.phone}" class="btn btn-primary btn-sm" style="background:var(--success); border-color:var(--success)">Call Now</a>
+                              <a href="mailto:${employer.email}" class="btn btn-ghost btn-sm">Email</a>
+                           </div>
+                        </div>
+                      ` : ''}
+                    </div>
+                  </div>
+                `;
+            }
+          }).join('');
+        }
+      } catch (err) {
+        console.error('Activity Error:', err);
+        document.getElementById('activity-list').innerHTML = '<p class="loading-text">Failed to load recent activity.</p>';
+      }
+
+      // Accept Application Function
+      window.acceptApplication = async (appId) => {
+          if (!confirm('Are you sure you want to accept this applicant?')) return;
+          try {
+              await fetchAPI('/accept', {
+                  method: 'POST',
+                  body: JSON.stringify({ appId, userId })
+              });
+              showAlert('Applicant accepted! Notification sent.', 'success');
+              setTimeout(() => location.reload(), 1500);
+          } catch (err) {
+              showAlert(err.message, 'error');
+          }
+      }
+
+      // Logout handler
+      document.getElementById('logout-btn-dash').onclick = (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        window.location.href = 'login.html';
+      };
+
+      // Notifications sidebar link
+      document.getElementById('nav-notifications').onclick = (e) => {
+        e.preventDefault();
+        const toggle = document.getElementById('notif-toggle');
+        if (toggle) toggle.click();
+      };
+      
+      // View all activity
+      document.getElementById('view-all-activity').onclick = (e) => {
+        e.preventDefault();
+        // Just show all for now or scroll? 
+        // For simplicity redirect to applications list if we had one, 
+        // but here we just show recent 5.
+      };
     });
-
-    // ---- Employer ----
-    async function loadEmployerJobs() {
-      document.getElementById('section-title').textContent = 'My Posted Jobs';
-      document.getElementById('header-action').innerHTML   = `<a href="/post-job" class="btn btn-primary btn-sm">+ Post New Job</a>`;
-      const content = document.getElementById('dashboard-content');
-      content.innerHTML = '<p class="loading-text">Loading your jobs...</p>';
-
-      try {
-        const response = await fetch('/api/jobs/employer');
-        const jobs = await response.json();
-
-        if (jobs.length === 0) {
-          content.innerHTML = `
-            <div class="card" style="text-align:center; padding:3rem;">
-              <div style="font-size:2.5rem; margin-bottom:1rem;">📋</div>
-              <h3 style="margin-bottom:0.5rem;">No jobs posted yet</h3>
-              <p>Post your first job and start receiving applications.</p>
-              <a href="/post-job" class="btn btn-primary" style="margin-top:1rem">Post a Job</a>
-            </div>`;
-          return;
-        }
-
-        content.innerHTML = `
-          <div class="stat-cards" style="margin-bottom:1.5rem;">
-            <div class="stat-card">
-              <div class="label">Total Jobs</div>
-              <div class="value">${jobs.length}</div>
-            </div>
-            <div class="stat-card">
-              <div class="label">Open Jobs</div>
-              <div class="value">${jobs.filter(j => j.status === 'open').length}</div>
-            </div>
-          </div>
-          <div style="display:flex; flex-direction:column; gap:0.85rem;">
-            ${jobs.map(job => {
-              const date = new Date(job.createdAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-              const isOpen = job.status === 'open';
-              return `
-                <div class="job-card" style="flex-direction:row; align-items:center; gap:1rem; flex-wrap:wrap;">
-                  <div style="flex:1; min-width:200px;">
-                    <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.35rem;">
-                      <h3 style="font-size:1rem;">${job.title}</h3>
-                      <span class="badge ${isOpen ? 'badge-success' : 'badge-danger'}">${job.status.toUpperCase()}</span>
-                    </div>
-                    <div class="job-meta" style="margin-bottom:0;">
-                      <span class="job-meta-item">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        ${job.location}
-                      </span>
-                      <span class="job-meta-item wage">₹${job.wage}/day</span>
-                      <span class="job-meta-item">${date}</span>
-                    </div>
-                  </div>
-                  <button onclick="viewApplications('${job._id}')" class="btn btn-secondary btn-sm">View Applications</button>
-                </div>`;
-            }).join('')}
-          </div>`;
-      } catch (err) {
-        content.innerHTML = `<p class="alert alert-error">Failed to load jobs.</p>`;
-      }
-    }
-
-    async function viewApplications(jobId) {
-      document.getElementById('section-title').textContent = 'Job Applications';
-      document.getElementById('header-action').innerHTML   = `<button onclick="loadEmployerJobs()" class="btn btn-ghost btn-sm">&larr; Back to Jobs</button>`;
-      const content = document.getElementById('dashboard-content');
-      content.innerHTML = '<p class="loading-text">Loading applications...</p>';
-
-      try {
-        const response = await fetch(`/api/jobs/${jobId}/applications`);
-        const apps = await response.json();
-
-        if (apps.length === 0) {
-          content.innerHTML = `<div class="card" style="text-align:center; padding:3rem;"><h3>No applications yet</h3><p>Share the job listing to attract applicants.</p></div>`;
-          return;
-        }
-
-        content.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.85rem;">
-          ${apps.map(app => {
-            const date   = new Date(app.appliedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-            const seeker = app.seekerId;
-            return `
-              <div class="card" style="padding:1.25rem;">
-                <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
-                  <div class="sidebar-avatar" style="width:38px;height:38px;font-size:1rem;">${seeker.name.charAt(0).toUpperCase()}</div>
-                  <div>
-                    <div style="font-weight:600; color:var(--text);">${seeker.name}</div>
-                    <div style="font-size:0.8rem; color:var(--text-muted);">Applied on ${date}</div>
-                  </div>
-                  <span class="badge badge-primary" style="margin-left:auto;">Status: ${app.status}</span>
-                </div>
-                <div class="job-meta">
-                  <span class="job-meta-item">📞 ${seeker.phone}</span>
-                  <span class="job-meta-item">✉️ ${seeker.email}</span>
-                </div>
-                <p style="font-size:0.85rem; margin:0; color:var(--text-muted);">📍 ${seeker.address}</p>
-              </div>`;
-          }).join('')}
-        </div>`;
-      } catch (err) {
-        content.innerHTML = `<p class="alert alert-error">Failed to load applications.</p>`;
-      }
-    }
-
-    // ---- Seeker ----
-    async function loadSeekerApplications() {
-      document.getElementById('section-title').textContent = 'My Applications';
-      document.getElementById('header-action').innerHTML   = `<a href="/jobs" class="btn btn-primary btn-sm">Browse More Jobs</a>`;
-      const content = document.getElementById('dashboard-content');
-      content.innerHTML = '<p class="loading-text">Loading your applications...</p>';
-
-      try {
-        const response = await fetch('/api/jobs/applications');
-        const apps = await response.json();
-
-        if (apps.length === 0) {
-          content.innerHTML = `
-            <div class="card" style="text-align:center; padding:3rem;">
-              <div style="font-size:2.5rem; margin-bottom:1rem;">🔍</div>
-              <h3 style="margin-bottom:0.5rem;">No applications yet</h3>
-              <p>Browse available jobs and submit your first application.</p>
-              <a href="/jobs" class="btn btn-primary" style="margin-top:1rem">Browse Jobs</a>
-            </div>`;
-          return;
-        }
-
-        content.innerHTML = `
-          <div class="stat-cards" style="margin-bottom:1.5rem;">
-            <div class="stat-card">
-              <div class="label">Total Applied</div>
-              <div class="value">${apps.length}</div>
-            </div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:0.85rem;">
-            ${apps.map(app => {
-              const job  = app.jobId;
-              const date = new Date(app.appliedAt).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-              return `
-                <div class="job-card" style="flex-direction:row;align-items:center;gap:1rem;flex-wrap:wrap;">
-                  <div style="flex:1;min-width:200px;">
-                    <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.35rem;">
-                      <h3 style="font-size:1rem;">${job.title}</h3>
-                    </div>
-                    <div class="job-meta" style="margin-bottom:0;">
-                      <span class="job-meta-item">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        ${job.location}
-                      </span>
-                      <span class="job-meta-item wage">₹${job.wage}/day</span>
-                      <span class="job-meta-item">Applied ${date}</span>
-                    </div>
-                  </div>
-                  <span class="badge badge-primary">Status: ${app.status}</span>
-                </div>`;
-            }).join('')}
-          </div>`;
-      } catch (err) {
-        content.innerHTML = `<p class="alert alert-error">Failed to load applications.</p>`;
-      }
-    }
   </script>
 </body>
 </html>
+tml>

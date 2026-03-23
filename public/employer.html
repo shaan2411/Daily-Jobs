@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employer Panel — Daily Jobs</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </span>
+        Daily<span class="brand-dot">Jobs</span>
+      </a>
+      <div class="nav-links" id="nav-links">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="dashboard-layout">
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">?</div>
+          <div class="sidebar-username" id="sidebar-name"><span id="dashName">Loading...</span></div>
+          <div class="sidebar-role" id="sidebar-role"></div>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="dashboard.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Dashboard
+          </a>
+          <a href="employer.html" class="sidebar-link active">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Review Applications
+          </a>
+          <a href="profile.html" class="sidebar-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Profile
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <section class="content-area">
+        <div id="alert-box" class="alert hidden"></div>
+
+        <div class="content-header">
+          <h2 id="section-title">Review Job Applications</h2>
+          <div id="header-action"></div>
+        </div>
+
+        <div id="dashboard-overview" class="hidden"></div>
+
+        <div id="dashboard-content">
+          <p class="loading-text">Loading activity...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const userId = localStorage.getItem('userId');
+      const role = localStorage.getItem('role');
+
+      if (role !== 'employer') {
+        window.location.href = 'dashboard.html';
+        return;
+      }
+
+      loadAllApplications();
+
+      async function loadAllApplications() {
+        const content = document.getElementById('dashboard-content');
+        content.innerHTML = '<p class="loading-text">Loading applications...</p>';
+        try {
+          const jobs = await fetchAPI('/jobs/employer');
+          if (jobs.length === 0) {
+            content.innerHTML = '<p>No jobs posted yet. <a href="post-job.html">Post a job</a> to see applications.</p>';
+            return;
+          }
+
+          let html = '<div style="display:flex;flex-direction:column;gap:1.5rem;">';
+          for (const job of jobs) {
+            const apps = await fetchAPI(`/api/jobs/${job._id}/applications`);
+            html += `
+              <div class="card" style="padding:1.5rem;">
+                <h3 style="margin-bottom:0.5rem;">${job.title}</h3>
+                <div id="applicants-${job._id}">
+                  ${apps.length === 0 ? '<p style="color:var(--text-muted); font-size:0.9rem;">No applications yet.</p>' : 
+                    apps.map(app => `
+                      <div class="card" style="padding:1rem; margin-top:0.5rem; display:flex; justify-content:space-between; align-items:center; background:#f8f9fa;">
+                        <div>
+                          <strong>User ID: ${app.userId}</strong>
+                          <p style="margin:0; font-size:0.85rem; color:var(--text-muted);">Status: ${app.status.toUpperCase()}</p>
+                        </div>
+                        ${app.status === 'pending' ? `
+                          <button onclick="acceptApp('${app._id}')" class="btn btn-primary btn-sm">Accept Application</button>
+                        ` : ''}
+                      </div>
+                    `).join('')
+                  }
+                </div>
+              </div>
+            `;
+          }
+          html += '</div>';
+          content.innerHTML = html;
+        } catch (err) {
+          content.innerHTML = '<p class="alert alert-error">Failed to load applications.</p>';
+        }
+      }
+    });
+
+    async function acceptApp(appId) {
+      const userId = localStorage.getItem('userId');
+      try {
+        await fetchAPI('/accept', {
+          method: 'POST',
+          body: JSON.stringify({ appId, userId, message: "Your job application has been accepted!" })
+        });
+        showAlert('Application accepted and seeker notified!', 'success');
+        location.reload();
+      } catch (err) {
+        showAlert(err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

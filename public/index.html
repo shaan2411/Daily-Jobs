@@ -6,29 +6,46 @@
   <meta name="description" content="Daily Jobs — Connect with local daily wage work opportunities near you. Household help, construction, delivery, and more.">
   <title>Daily Jobs — Find Local Work Opportunities</title>
   <link rel="stylesheet" href="/css/style.css">
+  <!-- Intro.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js@latest/introjs.min.css">
+  <style>
+    /* Anti-Gravity Theme for Vanilla */
+    @keyframes levitate {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .introjs-helperLayer { 
+      border-radius: 1rem !important; 
+      border: 2px solid rgba(110, 107, 224, 0.5) !important;
+      animation: levitate 3s ease-in-out infinite !important;
+    }
+    .introjs-tooltip { border-radius: 1.25rem !important; padding: 1.5rem !important; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25) !important; }
+    .introjs-nextbutton { background: #6e6be0 !important; text-shadow: none !important; border-radius: 0.5rem !important; }
+  </style>
 </head>
-<body>
+<body id="main-body">
 
-  <nav class="navbar">
+  <nav class="navbar" id="main-nav">
     <div class="container navbar-inner">
-      <a href="/" class="brand">
+      <a href="index.html" class="brand">
         <span class="brand-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
         </span>
-        Daily<span class="brand-dot">Jobs</span>
+        Daily Jobs
       </a>
-      <div class="nav-links" id="nav-links">
-        <a href="/jobs">Browse Jobs</a>
-        <a href="/login">Sign In</a>
-        <a href="/register" class="btn btn-primary btn-sm" style="margin-left:0.5rem">Get Started</a>
-      </div>
+      <ul class="nav-links">
+        <li><a href="jobs.html">Find Jobs</a></li>
+        <li><a href="post-job.html">Post a Job</a></li>
+        <li><a href="login.html" class="btn btn-outline">Sign In</a></li>
+        <li><a href="javascript:void(0)" onclick="restartTour()" class="btn btn-help" title="Restart Tour">❓</a></li>
+      </ul>
     </div>
   </nav>
 
   <main>
 
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero" id="hero-section">
       <div class="container">
         <span class="hero-eyebrow">
           <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
@@ -36,38 +53,145 @@
         </span>
         <h1>Find Daily Wage Jobs<br><span>Near You, Instantly</span></h1>
         <p class="hero-sub">Connecting unemployed individuals with local daily wage opportunities — household work, construction, helpers, delivery, and more.</p>
-        <div class="hero-ctas">
-          <a href="/jobs" class="btn btn-primary btn-lg">
+        <div class="hero-ctas" id="hero-ctas">
+          <a href="#" id="find-job-btn" onclick="if(!localStorage.getItem('user')) { window.location.href='login.html'; } else { window.location.href='jobs.html'; }" class="btn btn-primary btn-lg">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Find a Job
           </a>
-          <a href="/register" class="btn btn-secondary btn-lg">
+          <a href="#" id="post-job-btn" onclick="if(!localStorage.getItem('user')) { window.location.href='login.html'; } else { window.location.href='post-job.html'; }" class="btn btn-secondary btn-lg">
             Post a Job &rarr;
           </a>
         </div>
+        <script>
+          const userRole = localStorage.getItem('role');
+          if (userRole === 'employer') {
+            const findBtn = document.getElementById('find-job-btn');
+            if(findBtn) findBtn.style.display = 'none';
+          }
+          if (userRole === 'seeker') {
+            const postBtn = document.getElementById('post-job-btn');
+            if(postBtn) postBtn.style.display = 'none';
+          }
+        </script>
 
-        <div class="stats-strip">
-          <div class="stat-item">
-            <span class="number">500+</span>
-            <span class="label">Jobs Posted</span>
+      </div>
+    </section>
+
+    <!-- App Tour -->
+    <section class="tour-section" id="app-tour">
+      <div class="container">
+        <div class="tour-header-flex">
+          <div class="section-header" style="text-align:left; margin:0">
+            <span class="tour-badge">New User Guide</span>
+            <h2>Begin Your Journey with <span style="color:var(--primary)">Daily Jobs</span></h2>
+            <p>Learn how to find verified local work or hire talent in 4 simple steps.</p>
           </div>
-          <div class="stat-item">
-            <span class="number">1,200+</span>
-            <span class="label">Workers Registered</span>
+          <div class="tour-tabs" style="margin:0">
+            <button class="tour-tab active" data-tab="seeker">For Job Seekers</button>
+            <button class="tour-tab" data-tab="employer">For Employers</button>
           </div>
-          <div class="stat-item">
-            <span class="number">300+</span>
-            <span class="label">Employers Active</span>
+        </div>
+
+        <div class="tour-content">
+          <div class="tour-steps" id="tour-steps">
+            <!-- Steps injected by JS -->
           </div>
-          <div class="stat-item">
-            <span class="number">₹350</span>
-            <span class="label">Avg Daily Wage</span>
+        </div>
+
+        <div class="tour-footer-banner">
+          <div>
+             <h3 id="tour-footer-title">Ready to start?</h3>
+             <p id="tour-footer-subtitle" style="font-size:0.8rem; color:#64748b; margin:0">Launch your career as a daily wage worker</p>
           </div>
+          <a href="jobs.html" id="tour-footer-cta" class="btn btn-primary btn-lg">Find Jobs Near Me</a>
         </div>
       </div>
     </section>
 
-    <!-- Features -->
+    <style>
+      .tour-section { background: #fff; padding: 6rem 0; border-radius: 4rem; margin: 0 1rem; border: 1px solid #f1f5f9; }
+      .tour-header-flex { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 3rem; border-bottom: 1px solid #f1f5f9; margin-bottom: 4rem; gap: 2rem; }
+      .tour-badge { display: inline-block; font-size: 0.65rem; font-weight: 900; color: var(--primary); background: #eff6ff; padding: 0.4rem 1rem; border-radius: 2rem; text-transform: uppercase; letter-spacing: 0.1rem; margin-bottom: 1rem; }
+      .tour-tabs { display: flex; gap: 0.5rem; background: #f8fafc; padding: 0.4rem; border-radius: 1.25rem; border: 1px solid #f1f5f9; }
+      .tour-tab { padding: 0.75rem 1.5rem; border-radius: 1rem; border: none; font-weight: 700; cursor: pointer; background: transparent; color: #64748b; transition: all 0.3s; }
+      .tour-tab.active { background: #fff; color: var(--primary); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+      
+      .tour-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 3rem; }
+      .tour-step { display: flex; align-items: flex-start; gap: 1.5rem; padding: 2rem; background: #fff; border: 1px solid #f8fafc; border-radius: 2rem; transition: all 0.4s; }
+      .tour-step:hover { border-color: #dbeafe; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05); transform: translateY(-5px); }
+      .tour-step-icon { flex-shrink: 0; width: 4rem; height: 4rem; background: #eff6ff; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 0.05); }
+      
+      .tour-step-label { font-size: 0.6rem; font-weight: 900; color: var(--primary); background: #eff6ff; padding: 0.1rem 0.5rem; border-radius: 0.4rem; text-transform: uppercase; margin-bottom: 0.4rem; display: inline-block; }
+      .tour-step h4 { font-size: 1.1rem; font-weight: 900; color: #0f172a; margin: 0 0 0.5rem; letter-spacing: -0.02em; }
+      .tour-step p { font-size: 0.85rem; color: #64748b; margin: 0; line-height: 1.6; font-weight: 500; }
+      
+      .tour-footer-banner { margin-top: 5rem; background: #f8fafc; padding: 2.5rem 3.5rem; border-radius: 3rem; display: flex; justify-content: space-between; align-items: center; border: 1px solid #f1f5f9; }
+      .tour-footer-banner h3 { font-size: 1.5rem; font-weight: 900; color: #1e293b; margin: 0 0 0.2rem; }
+      
+      @media (max-width: 900px) { 
+        .tour-header-flex { flex-direction: column; align-items: flex-start; }
+        .tour-steps { grid-template-columns: 1fr; }
+        .tour-footer-banner { flex-direction: column; text-align: center; gap: 2rem; padding: 2rem; }
+      }
+    </style>
+
+    <script>
+      const tourData = {
+        seeker: {
+          cta: 'Find Jobs Near Me',
+          link: 'jobs.html',
+          subtitle: 'Launch your career as a daily wage worker',
+          steps: [
+            { icon: '📍', label: 'Step 01', title: 'Allow GPS Location', desc: 'Enable location or enter your city to see all verified daily wage opportunities directly in your neighborhood.' },
+            { icon: '🔎', label: 'Step 02', title: 'Smart Job Filters', desc: 'Filter by wages ($), categories (Construction, Cleaning), or distance. See exactly how far each site is from you.' },
+            { icon: '👉', label: 'Step 03', title: 'Apply Instantly', desc: 'Express your interest with a single tap. No complex resumes needed—employers will see your verified profile immediately.' },
+            { icon: '💵', label: 'Step 04', title: 'Work & Get Paid', desc: 'Connect with the employer via the dashboard, get the job done, and receive your fair daily wage at the end of the day.' }
+          ]
+        },
+        employer: {
+          cta: 'Post a Job Today',
+          link: 'post-job.html',
+          subtitle: 'Hire local talent for your project today',
+          steps: [
+            { icon: '🏗️', label: 'Step 01', title: 'Create Your Profile', desc: 'Register as an employer, verify your business, and set up your projects in just a few clicks.' },
+            { icon: '📝', label: 'Step 02', title: 'List Your Requirements', desc: 'Post jobs with clear descriptions, specific on-site locations, and fixed daily wages to attract the best nearby talent.' },
+            { icon: '👤', label: 'Step 03', title: 'Select the Best Fit', desc: 'Browse interested applicants, check their profiles, and pick the workers you need. Real-time notifications keep you updated.' },
+            { icon: '🤝', label: 'Step 04', title: 'Get Your Work Done', desc: 'Coordinate with your hired workers directly through our dashboard and grow your business with reliable local support.' }
+          ]
+        }
+      };
+
+      function switchTourTab(tab) {
+        document.querySelectorAll('.tour-tab').forEach(b => {
+          b.classList.toggle('active', b.dataset.tab === tab);
+        });
+        
+        const data = tourData[tab];
+        document.getElementById('tour-footer-title').innerText = 'Ready to start?';
+        document.getElementById('tour-footer-subtitle').innerText = data.subtitle;
+        const cta = document.getElementById('tour-footer-cta');
+        cta.innerText = data.cta;
+        cta.href = data.link;
+
+        const container = document.getElementById('tour-steps');
+        container.innerHTML = data.steps.map((s) => `
+          <div class="tour-step">
+            <div class="tour-step-icon">${s.icon}</div>
+            <div>
+              <span class="tour-step-label">${s.label}</span>
+              <h4>${s.title}</h4>
+              <p>${s.desc}</p>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      document.querySelectorAll('.tour-tab').forEach(btn => {
+        btn.addEventListener('click', () => switchTourTab(btn.dataset.tab));
+      });
+
+      switchTourTab('seeker');
+    </script>
     <section class="features-section">
       <div class="container">
         <div class="section-header">
@@ -128,8 +252,7 @@
           <h2>Ready to get started?</h2>
           <p>Join thousands of workers and employers already using Daily Jobs to find work and hire locally.</p>
           <div class="hero-ctas" style="margin-bottom:0">
-            <a href="/register" class="btn btn-secondary btn-lg">Create Free Account</a>
-            <a href="/jobs" class="btn btn-primary btn-lg">Browse Jobs First</a>
+            <a href="register.html" class="btn btn-secondary btn-lg">Create Free Account</a>
           </div>
         </div>
       </div>
@@ -139,10 +262,61 @@
 
   <footer>
     <div class="container">
-      <p>&copy; 2026 <a href="/">Daily Jobs</a> &mdash; College Mini Project. Built with care.</p>
+      <p>&copy; 2026 <a href="index.html">Daily Jobs</a> &mdash; College Mini Project. Built with care.</p>
     </div>
   </footer>
 
   <script src="/js/main.js"></script>
+  <!-- Intro.js Script -->
+  <script src="https://cdn.jsdelivr.net/npm/intro.js@latest/intro.min.js"></script>
+  <script>
+    function startOnboardingTour() {
+      if (typeof introJs === 'undefined') return;
+      introJs().setOptions({
+        steps: [
+          {
+            element: '#main-nav',
+            title: '🚀 Your Daily Dashboard',
+            intro: 'Welcome to DailyJobs! Use the navigation bar to switch between finding work and posting new jobs.',
+            position: 'bottom'
+          },
+          {
+            element: '#hero-section',
+            title: '✨ Start Right Here',
+            intro: 'Looking for work? Click "Find a Job". Need to hire? Click "Post a Job". It\'s that simple!',
+            position: 'top'
+          },
+          {
+            element: '.tour-tabs',
+            title: '📚 Learn More',
+            intro: 'Switch between seeker and employer views to see how the platform works for you.',
+            position: 'top'
+          },
+          {
+             element: '#main-nav',
+             title: '👋 Ready to Go?',
+             intro: 'Sign in or create an account to start applying for jobs or hiring local talent today!',
+             position: 'bottom'
+          }
+        ],
+        showProgress: true,
+        scrollToElement: true,
+        doneLabel: 'Let\'s Go!'
+      }).start();
+    }
+
+    // Auto-start on first visit
+    window.addEventListener('load', () => {
+      if (!localStorage.getItem('hasSeenTourVanilla')) {
+        setTimeout(() => {
+          startOnboardingTour();
+          localStorage.setItem('hasSeenTourVanilla', 'true');
+        }, 2000);
+      }
+    });
+
+    // Option to restart (can be tied to a help icon later)
+    window.restartTour = startOnboardingTour;
+  </script>
 </body>
 </html>
